@@ -20,6 +20,12 @@ st.markdown("""
         background-color: #050505; 
     }
     
+    /* --- DODANO: FIKSIRANA ŠIRINA DA APLIKACIJA BUDE USKA KAO PRIJE --- */
+    .block-container {
+        max-width: 700px !important; 
+        padding-top: 2rem !important;
+    }
+    
     /* =======================================================
        ŠAH-MAT ZA STREAMLIT: Bez okvira, samo svjetlija pozadina!
        ======================================================= */
@@ -205,6 +211,32 @@ st.markdown("""
         text-align: center;
         margin-top: 40px;
         text-shadow: 0 0 8px #8a2be2; 
+    }
+
+    /* --- DODANO: PRAVILA KOJA SPAŠAVAJU MOBITEL (Naslov i Gumbi) --- */
+    @media (max-width: 650px) {
+        .naslov-kontejner {
+            flex-direction: column; /* Stavlja paletu iznad teksta */
+            gap: 5px;
+            padding: 30px 10px;
+        }
+        .naslov-ikona {
+            font-size: 4rem; 
+        }
+        .naslov-tekst {
+            font-size: 1.8rem !important; /* Smanjuje tekst da ne curi van okvira */
+            text-align: center;
+        }
+        .prvi-red {
+            white-space: normal !important; /* Gasi zabranu prelaska u novi red na mobitelu */
+        }
+        div[data-testid="stHorizontalBlock"] {
+            flex-wrap: wrap !important; /* Dozvoljava gumbima da idu u novi red */
+        }
+        div[data-testid="column"] {
+            min-width: 45% !important; /* Na mobitelu gumbi postaju kockasti i idu 2x2 */
+            flex: 1 1 auto !important;
+        }
     }
     </style>
     """, unsafe_allow_html=True)
