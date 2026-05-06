@@ -176,7 +176,7 @@ st.markdown("""
         border: 2px dashed #8a2be2 !important;
         border-radius: 10px;
         padding: 10px;
-        background-color: #0b0b0b; /* Uploader ima mrvicu tamniju pozadinu da se istakne */
+        background-color: #0b0b0b; 
         box-shadow: 0 0 6px rgba(138, 43, 226, 0.2) !important;
     }
     div[data-testid="stFileUploadDropzone"] small {
@@ -201,7 +201,7 @@ st.markdown("""
 
     hr {
         border-color: #8a2be2 !important;
-        opacity: 0.3 !important; /* Još blaže linije unutar same aplikacije */
+        opacity: 0.3 !important; 
     }
 
     .veliki-pozdrav {
@@ -216,7 +216,7 @@ st.markdown("""
     /* --- DODANO: PRAVILA KOJA SPAŠAVAJU MOBITEL (Naslov i Gumbi) --- */
     @media (max-width: 650px) {
         .naslov-kontejner {
-            flex-direction: column; /* Stavlja paletu iznad teksta */
+            flex-direction: column; 
             gap: 5px;
             padding: 30px 10px;
         }
@@ -224,22 +224,22 @@ st.markdown("""
             font-size: 4rem; 
         }
         .naslov-tekst {
-            font-size: 1.8rem !important; /* Smanjuje tekst da ne curi van okvira */
+            font-size: 1.8rem !important; 
             text-align: center;
         }
         .prvi-red {
-            white-space: normal !important; /* Gasi zabranu prelaska u novi red na mobitelu */
+            white-space: normal !important; 
         }
         div[data-testid="stHorizontalBlock"] {
-            flex-wrap: wrap !important; /* Dozvoljava gumbima da idu u novi red */
+            flex-wrap: wrap !important; 
         }
         div[data-testid="column"] {
-            min-width: 45% !important; /* Na mobitelu gumbi postaju kockasti i idu 2x2 */
+            min-width: 45% !important; 
             flex: 1 1 auto !important;
         }
     }
     </style>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # --- INICIJALIZACIJA MEMORIJE ---
 if 'uredjena' not in st.session_state:
