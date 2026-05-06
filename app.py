@@ -166,24 +166,17 @@ st.markdown("""
         opacity: 1 !important; 
     }
 
-    .stFileUploader /* SILOM BOJAMO PROSTOR ZA UPLOAD */
-    div[data-testid="stFileUploadDropzone"] {
-        background-color: #121212 !important; 
-        border: 2px dashed #8a2be2 !important; 
-        border-radius: 10px !important;
+    .stFileUploader {
+        border: 2px dashed #8a2be2 !important;
+        border-radius: 10px;
+        padding: 10px;
+        background-color: #0b0b0b; /* Uploader ima mrvicu tamniju pozadinu da se istakne */
+        box-shadow: 0 0 6px rgba(138, 43, 226, 0.2) !important;
     }
-
-    /* Bojamo sav tekst unutar uploader-a u bijelo */
-    div[data-testid="stFileUploadDropzone"] span, 
-    div[data-testid="stFileUploadDropzone"] button,
-    div[data-testid="stFileUploadDropzone"] div {
-        color: #ffffff !important;
-    }
-    
-    /* Sakrivamo mali tekst o limitu datoteke */
     div[data-testid="stFileUploadDropzone"] small {
         display: none !important;
     }
+
     .stSlider div[data-testid="stThumbValue"] {
         color: #d896ff !important;
         font-weight: bold;
