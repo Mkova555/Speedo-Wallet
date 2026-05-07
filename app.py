@@ -4,6 +4,12 @@ from rembg import remove
 import io
 
 # 1. POSTAVKE STRANICE MORAJU BITI NA SAMOM VRHU! 
+st.set_page_config(
+    page_title="TINČEK DIZAJN PRO EDITOR",
+    page_icon="🎨",
+    layout="centered" 
+)
+
 # 2. CSS STILIZACIJA (Dark Card & Banner Tema)
 st.markdown("""
     <style>
@@ -12,24 +18,30 @@ st.markdown("""
     /* =======================================================
        1. TOTALNO BRISANJE STREAMLIT REKLAMA I TRAKA
        ======================================================= */
-    /* Bijela traka na vrhu */
+    /* Gornja traka */
     header, [data-testid="stHeader"], .stAppHeader { 
         display: none !important; 
-        visibility: hidden !important; 
         height: 0px !important;
     }
-    /* Crveni logo, Deploy gumbi i GitHub ikone */
-    .viewerBadge_container__1QSob, .viewerBadge_link__1S137, 
-    [data-testid="stAppDeployButton"], .stDeployButton, 
-    #MainMenu, [data-testid="stToolbar"] { 
+    
+    /* Plutajuće tipke dolje desno (Crveni balončić i ostalo) */
+    [data-testid="stToolbar"], 
+    [data-testid="stDecoration"], 
+    [data-testid="manage-app-button"],
+    .stDeployButton, 
+    #MainMenu,
+    .stApp > div > div > div > div:last-child { 
         display: none !important; 
         visibility: hidden !important;
         opacity: 0 !important;
+        pointer-events: none !important;
     }
+    
     /* Footer na dnu */
     footer, [data-testid="stFooter"] { 
         display: none !important; 
     }
+    
     /* Micanje praznog prostora iznad aplikacije */
     .stApp > div:first-child {
         padding-top: 0px !important;
@@ -178,37 +190,38 @@ st.markdown("""
     }
 
     /* =======================================================
-       3. FORSIRANJE TAMNOG UPLOADERA (BEZ BIJELILA)
+       3. BRUTALNO BOJANJE UPLOADERA 
        ======================================================= */
-    /* Glavni okvir */
-    div[data-testid="stFileUploadDropzone"], 
-    div[data-testid="stFileUploadDropzone"] > div,
-    div[data-testid="stFileUploadDropzone"] > div > div {
+    /* Glavni okvir uploadera */
+    .stFileUploader {
         background-color: #0b0b0b !important;
-        border: none !important; /* Mičemo unutarnje rubove */
-    }
-    div[data-testid="stFileUploadDropzone"] {
         border: 2px dashed #8a2be2 !important;
-        border-radius: 10px;
-        padding: 10px;
-        box-shadow: 0 0 6px rgba(138, 43, 226, 0.2) !important;
+        border-radius: 10px !important;
+        padding: 15px !important;
+        box-shadow: 0 0 10px rgba(138, 43, 226, 0.2) !important;
     }
-    /* Ikonica oblačića i tekst "200MB per file..." */
-    div[data-testid="stFileUploadDropzone"] svg {
+    
+    /* Poništavanje bjelila u svim unutarnjim slojevima */
+    .stFileUploader div {
+        background-color: transparent !important;
+    }
+    
+    /* Forisranje ljubičaste boje na SAV tekst i ikone unutar uploadera */
+    .stFileUploader * {
+        color: #d896ff !important;
         fill: #d896ff !important;
-        color: #d896ff !important;
     }
-    div[data-testid="stFileUploadDropzone"] span {
-        color: #d896ff !important;
-    }
-    /* Gumb "Upload" */
-    div[data-testid="stFileUploadDropzone"] button {
+    
+    /* Gumb "Upload" (sad ciljamo HTML tag direktno) */
+    .stFileUploader button {
         background-color: #1a0b2e !important;
         color: #ffffff !important;
         border: 1px solid #8a2be2 !important;
+        border-radius: 6px !important;
     }
-    /* Skrivanje nepotrebnog "Limit 200MB" ispod */
-    div[data-testid="stFileUploadDropzone"] small {
+    
+    /* Sakrivanje malog dosadnog teksta */
+    .stFileUploader small {
         display: none !important;
     }
 
