@@ -4,58 +4,71 @@ from rembg import remove
 import io
 
 # 1. POSTAVKE STRANICE MORAJU BITI NA SAMOM VRHU! 
-st.set_page_config(
-    page_title="TINČEK DIZAJN PRO EDITOR",
-    page_icon="🎨",
-    layout="centered" 
-)
-
 # 2. CSS STILIZACIJA (Dark Card & Banner Tema)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap');
 
-    /* Apsolutno najtamnija crna za pozadinu cijele stranice (oko aplikacije) */
+    /* =======================================================
+       1. TOTALNO BRISANJE STREAMLIT REKLAMA I TRAKA
+       ======================================================= */
+    /* Bijela traka na vrhu */
+    header, [data-testid="stHeader"], .stAppHeader { 
+        display: none !important; 
+        visibility: hidden !important; 
+        height: 0px !important;
+    }
+    /* Crveni logo, Deploy gumbi i GitHub ikone */
+    .viewerBadge_container__1QSob, .viewerBadge_link__1S137, 
+    [data-testid="stAppDeployButton"], .stDeployButton, 
+    #MainMenu, [data-testid="stToolbar"] { 
+        display: none !important; 
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+    /* Footer na dnu */
+    footer, [data-testid="stFooter"] { 
+        display: none !important; 
+    }
+    /* Micanje praznog prostora iznad aplikacije */
+    .stApp > div:first-child {
+        padding-top: 0px !important;
+    }
+
+    /* =======================================================
+       2. TVOJ GLAVNI DIZAJN
+       ======================================================= */
     .stApp {
-        background-color: #050505; 
+        background-color: #050505 !important; 
     }
     
-    /* --- DODANO: FIKSIRANA ŠIRINA DA APLIKACIJA BUDE USKA KAO PRIJE --- */
     .block-container {
         max-width: 700px !important; 
         padding-top: 2rem !important;
     }
     
-    /* =======================================================
-       ŠAH-MAT ZA STREAMLIT: Bez okvira, samo svjetlija pozadina!
-       ======================================================= */
     html body div[data-testid="stVerticalBlockBorderWrapper"] {
-        background-color: #121212 !important; /* Malo svjetlija crna za "karticu" */
-        border: none !important; /* UKINUTI SVI OKVIRI! */
+        background-color: #121212 !important; 
+        border: none !important; 
         border-radius: 15px !important;
-        box-shadow: 0 10px 40px rgba(138, 43, 226, 0.15) !important; /* Vrlo blagi ljubičasti odsjaj iza kartice */
+        box-shadow: 0 10px 40px rgba(138, 43, 226, 0.15) !important; 
         padding: 30px 20px !important;
         overflow: hidden !important; 
     }
-    /* Poništavamo sivi Streamlit okvir ako se pokuša sakriti unutra */
     html body div[data-testid="stVerticalBlockBorderWrapper"] > div {
         border: none !important;
         box-shadow: none !important;
     }
 
-    /* --- VRAĆENI I POBOLJŠANI HEADER BANNER --- */
     .naslov-kontejner {
         display: flex;
         align-items: center; 
         justify-content: center; 
         gap: 20px; 
-        
-        /* Gradient koji kreće od ljubičaste i stapa se u našu novu #121212 pozadinu */
         background: linear-gradient(180deg, #2a0a4a 0%, #121212 100%);
-        margin: -30px -20px 30px -20px; /* Rasteže ga od ruba do ruba "kartice" */
+        margin: -30px -20px 30px -20px; 
         padding: 40px 20px;
-        
-        border-bottom: 1px solid rgba(138, 43, 226, 0.3); /* Jako suptilna linija odvajanja */
+        border-bottom: 1px solid rgba(138, 43, 226, 0.3); 
     }
     .naslov-ikona {
         font-size: 5.5rem; 
@@ -73,9 +86,7 @@ st.markdown("""
         line-height: 1.2 !important;
         margin: 0;
     }
-    .prvi-red {
-        white-space: nowrap !important;
-    }
+    .prvi-red { white-space: nowrap !important; }
 
     .alati-naslov {
         font-size: 2rem;
@@ -91,13 +102,8 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-    /* --- RAZMACI IZMEĐU STUPACA --- */
-    div[data-testid="stHorizontalBlock"] {
-        gap: 8px !important; 
-    }
-    div[data-testid="column"] {
-        padding: 0 !important; 
-    }
+    div[data-testid="stHorizontalBlock"] { gap: 8px !important; }
+    div[data-testid="column"] { padding: 0 !important; }
 
     /* --- GUMBI --- */
     .stButton>button {
@@ -169,47 +175,44 @@ st.markdown("""
     li[role="option"]:hover, li[role="option"][aria-selected="true"] {
         background-color: #8a2be2 !important; 
         color: #ffffff !important;
-        opacity: 1 !important; 
     }
 
-    /* --- POPRAVAK ZA VIDLJIVOST TEKSTA I GUMBA --- */
-    .stFileUploader {
+    /* =======================================================
+       3. FORSIRANJE TAMNOG UPLOADERA (BEZ BIJELILA)
+       ======================================================= */
+    /* Glavni okvir */
+    div[data-testid="stFileUploadDropzone"], 
+    div[data-testid="stFileUploadDropzone"] > div,
+    div[data-testid="stFileUploadDropzone"] > div > div {
+        background-color: #0b0b0b !important;
+        border: none !important; /* Mičemo unutarnje rubove */
+    }
+    div[data-testid="stFileUploadDropzone"] {
         border: 2px dashed #8a2be2 !important;
         border-radius: 10px;
         padding: 10px;
-        background-color: #0b0b0b !important;
         box-shadow: 0 0 6px rgba(138, 43, 226, 0.2) !important;
     }
-
-    /* --- PLAN B: SAKRIVANJE PROBLEMATIČNIH BIJELIH DIJELOVA --- */
-    
-    /* Sakrij bijeli Upload gumb i ikonu oblaka */
-    [data-testid="stFileUploadDropzone"] button, 
-    [data-testid="stFileUploadDropzone"] svg {
-        display: none !important;
-    }
-
-    /* Sakrij onaj bijeli tekst o veličini datoteke */
-    [data-testid="stFileUploadDropzone"] div div {
-        color: transparent !important;
-        font-size: 0px !important;
-    }
-
-    /* Umjesto svega toga, stavit ćemo tvoj tekst da uploader ne bude prazan */
-    [data-testid="stFileUploadDropzone"]::before {
-        content: "📥 KLIKNI OVDJE ILI PREVUCI SLIKU";
+    /* Ikonica oblačića i tekst "200MB per file..." */
+    div[data-testid="stFileUploadDropzone"] svg {
+        fill: #d896ff !important;
         color: #d896ff !important;
-        font-weight: bold;
-        display: block;
-        text-align: center;
-        padding: 20px;
     }
-
-    /* Sakrivanje nepotrebnog malog teksta */
+    div[data-testid="stFileUploadDropzone"] span {
+        color: #d896ff !important;
+    }
+    /* Gumb "Upload" */
+    div[data-testid="stFileUploadDropzone"] button {
+        background-color: #1a0b2e !important;
+        color: #ffffff !important;
+        border: 1px solid #8a2be2 !important;
+    }
+    /* Skrivanje nepotrebnog "Limit 200MB" ispod */
     div[data-testid="stFileUploadDropzone"] small {
         display: none !important;
     }
 
+    /* Slajderi */
     .stSlider div[data-testid="stThumbValue"] {
         color: #d896ff !important;
         font-weight: bold;
@@ -240,33 +243,27 @@ st.markdown("""
         text-shadow: 0 0 8px #8a2be2; 
     }
 
-    /* --- DODANO: PRAVILA KOJA SPAŠAVAJU MOBITEL (Naslov i Gumbi) --- */
+    /* --- RESPONSIVNOST --- */
     @media (max-width: 650px) {
         .naslov-kontejner {
             flex-direction: column; 
             gap: 5px;
             padding: 30px 10px;
         }
-        .naslov-ikona {
-            font-size: 4rem; 
-        }
+        .naslov-ikona { font-size: 4rem; }
         .naslov-tekst {
             font-size: 1.8rem !important; 
             text-align: center;
         }
-        .prvi-red {
-            white-space: normal !important; 
-        }
-        div[data-testid="stHorizontalBlock"] {
-            flex-wrap: wrap !important; 
-        }
+        .prvi-red { white-space: normal !important; }
+        div[data-testid="stHorizontalBlock"] { flex-wrap: wrap !important; }
         div[data-testid="column"] {
             min-width: 45% !important; 
             flex: 1 1 auto !important;
         }
     }
     </style>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
 # --- INICIJALIZACIJA MEMORIJE ---
 if 'uredjena' not in st.session_state:
