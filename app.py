@@ -1,31 +1,4 @@
-import streamlit# Postavi ovo na sam vrh, odmah ispod importa
-st.markdown("""
-    <style>
-    /* 1. Potpuno uklanjanje šarene linije na vrhu */
-    [data-testid="stDecoration"] {
-        display: none !important;
-        height: 0px !important;
-    }
-
-    /* 2. Skrivanje cijelog headera (izbornik, deploy gumb, bijela traka) */
-    header {
-        visibility: hidden !important;
-        height: 0px !important;
-    }
-
-    /* 3. Micanje praznog prostora koji ostane nakon headera */
-    .stAppViewMain [data-testid="stMainBlockContainer"] {
-        padding-top: 0rem !important;
-        margin-top: -1rem !important;
-    }
-
-    /* 4. Dodatno micanje gornje bijele crte ako je ostala kao sjena */
-    [data-testid="stHeader"] {
-        background-color: rgba(0,0,0,0) !important;
-        display: none !important;
-    }
-    </style>
-    """, unsafe_allow_html=True) as st
+import streamlit as st
 from PIL import Image, ImageEnhance
 from rembg import remove
 import io
