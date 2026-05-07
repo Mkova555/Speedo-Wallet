@@ -181,16 +181,28 @@ st.markdown("""
         box-shadow: 0 0 6px rgba(138, 43, 226, 0.2) !important;
     }
 
-    /* Boja za gumb unutar uploadera */
-    [data-testid="stFileUploadDropzone"] button {
-        color: #ffffff !important;
-        background-color: #1a0b2e !important;
-        border: 1px solid #8a2be2 !important;
+    /* --- PLAN B: SAKRIVANJE PROBLEMATIČNIH BIJELIH DIJELOVA --- */
+    
+    /* Sakrij bijeli Upload gumb i ikonu oblaka */
+    [data-testid="stFileUploadDropzone"] button, 
+    [data-testid="stFileUploadDropzone"] svg {
+        display: none !important;
     }
 
-    /* Boja za tekst "200MB per file..." da ne bude bijelo-na-bijelom */
+    /* Sakrij onaj bijeli tekst o veličini datoteke */
     [data-testid="stFileUploadDropzone"] div div {
+        color: transparent !important;
+        font-size: 0px !important;
+    }
+
+    /* Umjesto svega toga, stavit ćemo tvoj tekst da uploader ne bude prazan */
+    [data-testid="stFileUploadDropzone"]::before {
+        content: "📥 KLIKNI OVDJE ILI PREVUCI SLIKU";
         color: #d896ff !important;
+        font-weight: bold;
+        display: block;
+        text-align: center;
+        padding: 20px;
     }
 
     /* Sakrivanje nepotrebnog malog teksta */
