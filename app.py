@@ -2,16 +2,16 @@ import streamlit as st
 from PIL import Image, ImageEnhance
 from rembg import remove
 import io
-from streamlit_cropper import st_cropper # Alat za rezanje
+from streamlit_cropper import st_cropper 
 
-# 1. POSTAVKE STRANICE
+# 1. POSTAVKE STRANICE (Ovdje sad vuče tvoju sliku!)
 st.set_page_config(
     page_title="TINČEK DIZAJN PRO EDITOR",
     page_icon="ikona.png", 
     layout="centered" 
 )
 
-# 2. CSS STILIZACIJA (Pročišćena i pojačana da uhvati sve tipke)
+# 2. CSS STILIZACIJA (Popravljen izbornik)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap');
@@ -45,32 +45,58 @@ st.markdown("""
         font-size: 2.6rem !important; line-height: 1.2 !important; margin: 0;
     }
 
-    /* =======================================================
-       3. BRUTALNO STILIZIRANJE *SVIH* GUMBA (Identitet Neon)
-       ======================================================= */
-    /* Ovo cilja SVAKU tipku u aplikaciji, uključujući onu bijelu */
+    /* --- SVI GUMBI --- */
     div[data-testid="stButton"] button {
         width: 100% !important;
         border-radius: 8px !important;
         height: 3.5em !important;
-        background-color: #1a0b2e !important; /* Tamna pozadina */
-        color: #ffffff !important; /* Bijela slova */
-        border: 1px solid #8a2be2 !important; /* Ljubičasti rub */
+        background-color: #1a0b2e !important; 
+        color: #ffffff !important; 
+        border: 1px solid #8a2be2 !important; 
         transition: all 0.3s ease-in-out !important;
         font-weight: 600 !important;
         white-space: nowrap !important;
         margin-top: 0 !important;
         box-shadow: none !important;
     }
-    /* Efekt kad mišem pređeš preko *bilo koje* tipke */
     div[data-testid="stButton"] button:hover {
         border-color: #d896ff !important;
         background-color: #3b1361 !important;
         color: #ffffff !important;
-        box-shadow: 0 0 15px rgba(138, 43, 226, 0.8) !important; /* Neon sjaj */
+        box-shadow: 0 0 15px rgba(138, 43, 226, 0.8) !important; 
     }
 
-    /* Uploader ostaje mračan */
+    /* --- PADAJUĆI IZBORNIK (Vraćen Neon!) --- */
+    div[data-baseweb="select"] > div {
+        background-color: #1a0b2e !important; 
+        border: 1px solid #8a2be2 !important; 
+        border-radius: 8px !important;
+        height: 3.5em !important; 
+        transition: all 0.3s ease-in-out !important;
+    }
+    div[data-baseweb="select"] > div:hover {
+        border-color: #d896ff !important;
+        box-shadow: 0 0 15px rgba(138, 43, 226, 0.8) !important;
+    }
+    div[data-baseweb="select"] > div > div {
+        color: #ffffff !important; 
+        font-weight: 600 !important;
+    }
+    div[data-baseweb="popover"] div[role="listbox"] {
+        background-color: #1a0b2e !important;
+        border: 2px solid #8a2be2 !important;
+        border-radius: 8px;
+    }
+    li[role="option"] {
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        background-color: #1a0b2e !important; 
+    }
+    li[role="option"]:hover, li[role="option"][aria-selected="true"] {
+        background-color: #8a2be2 !important; 
+        color: #ffffff !important;
+    }
+
     .stFileUploader { border: 2px dashed #8a2be2 !important; border-radius: 10px; }
     
     .veliki-pozdrav {
@@ -143,7 +169,7 @@ with st.container(border=True):
             st.session_state.uredjena = img
             st.session_state.last_name = učitana_datoteka.name
 
-        # --- ALAT ZA IZREZIVANJE (Ovaj gumb je sad Neon!) ---
+        # --- ALAT ZA IZREZIVANJE ---
         if st.session_state.rezanje_aktivno:
             st.info("Podesi okvir za izrezivanje na slici ispod i klikni 'POTVRDI REZ'")
             img_crop = st_cropper(st.session_state.uredjena, realtime_update=True, box_color='#8a2be2', aspect_ratio=None)
@@ -170,7 +196,6 @@ with st.container(border=True):
                 buf = io.BytesIO()
                 if fmt == "JPG": img_final = img_final.convert("RGB")
                 img_final.save(buf, format=fmt)
-                # Ovdje nemamo download gumb stiliziran, Streamlit ga ne da, al nema veze
                 st.download_button(label=f"⬇️ SPREMI KAO {fmt}", data=buf.getvalue(), file_name=f"tincek_dizajn.{fmt.lower()}", mime=f"image/{fmt.lower()}")
     else:
         st.markdown('<p class="veliki-pozdrav">👋 Pozdrav! Učitaj sliku ispod kako bi se otvorila vrata alata na vrhu.</p>', unsafe_allow_html=True)
