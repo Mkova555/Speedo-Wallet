@@ -172,13 +172,28 @@ st.markdown("""
         opacity: 1 !important; 
     }
 
+    /* --- POPRAVAK ZA VIDLJIVOST TEKSTA I GUMBA --- */
     .stFileUploader {
         border: 2px dashed #8a2be2 !important;
         border-radius: 10px;
         padding: 10px;
-        background-color: #0b0b0b; 
+        background-color: #0b0b0b !important;
         box-shadow: 0 0 6px rgba(138, 43, 226, 0.2) !important;
     }
+
+    /* Boja za gumb unutar uploadera */
+    [data-testid="stFileUploadDropzone"] button {
+        color: #ffffff !important;
+        background-color: #1a0b2e !important;
+        border: 1px solid #8a2be2 !important;
+    }
+
+    /* Boja za tekst "200MB per file..." da ne bude bijelo-na-bijelom */
+    [data-testid="stFileUploadDropzone"] div div {
+        color: #d896ff !important;
+    }
+
+    /* Sakrivanje nepotrebnog malog teksta */
     div[data-testid="stFileUploadDropzone"] small {
         display: none !important;
     }
