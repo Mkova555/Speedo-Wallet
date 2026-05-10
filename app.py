@@ -27,7 +27,7 @@ st.set_page_config(
     layout="centered" 
 )
 
-# 2. CSS STILIZACIJA (POPRAVLJENA ZA MOBITELE)
+# 2. CSS STILIZACIJA (POPRAVLJENA ZA MOBITELE - NEUNIŠTIVA VERZIJA)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap');
@@ -44,42 +44,43 @@ st.markdown("""
         border: none !important; 
         border-radius: 15px !important;
         box-shadow: 0 10px 40px rgba(138, 43, 226, 0.15) !important; 
-        padding: 30px 20px !important;
+        padding: 20px 15px !important;
     }
 
-    /* POPRAVLJENI KONTEJNER NASLOVA ZA MOBITELE */
+    /* --- NOVI, NEPROBOJNI NASLOV --- */
     .naslov-kontejner {
-        display: flex; 
-        flex-direction: column; /* Na mobitelu slaže sliku iznad teksta */
-        align-items: center; 
-        justify-content: center; 
-        gap: 15px; 
-        background: linear-gradient(180deg, #2a0a4a 0%, #121212 100%);
-        margin: -30px -20px 30px -20px; 
-        padding: 30px 10px;
-        border-bottom: 1px solid rgba(138, 43, 226, 0.3); 
         text-align: center;
+        background: linear-gradient(180deg, #2a0a4a 0%, #121212 100%);
+        padding: 25px 10px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        border: 1px solid rgba(138, 43, 226, 0.3);
     }
     
-    /* Ako je ekran širi (kompjuter), stavi ih jedno pored drugog */
-    @media (min-width: 600px) {
-        .naslov-kontejner {
-            flex-direction: row; 
-            padding: 40px 20px;
-        }
+    .naslov-ikona {
+        max-width: 90px; /* Sigurna veličina za sve ekrane */
+        margin: 0 auto 15px auto;
+        display: block;
+        filter: drop-shadow(0 0 15px rgba(138, 43, 226, 0.7));
     }
 
     .naslov-tekst {
         color: #ffffff !important; 
         font-family: 'Orbitron', sans-serif !important;
         font-weight: 900; 
-        letter-spacing: 2px;
-        text-shadow: 0 0 10px #8a2be2, 0 0 20px #8a2be2, 0 0 40px #d896ff !important;
-        font-size: clamp(1.8rem, 6vw, 2.6rem) !important; /* Pametno smanjivanje fonta */
-        line-height: 1.2 !important; 
+        letter-spacing: 1px;
+        text-shadow: 0 0 10px #8a2be2, 0 0 20px #8a2be2 !important;
+        font-size: 1.6rem !important; /* Smanjeno da ne prelama slova! */
+        line-height: 1.3 !important; 
         margin: 0;
     }
 
+    @media (min-width: 600px) {
+        .naslov-tekst { font-size: 2.3rem !important; }
+        .naslov-ikona { max-width: 120px; }
+    }
+
+    /* --- GUMBI RASTEGNUTI NA CIJELU ŠIRINU --- */
     div[data-testid="stButton"] button {
         width: 100% !important; border-radius: 8px !important; height: 3.5em !important;
         background-color: #1a0b2e !important; color: #ffffff !important; 
@@ -118,11 +119,11 @@ if 'aktivni_alat' not in st.session_state: st.session_state.aktivni_alat = None
 if 'zadnji_ai_mod' not in st.session_state: st.session_state.zadnji_ai_mod = "AI: Standardno"
 
 with st.container(border=True):
-    # --- FIKSIRANA VELIČINA LOGA (Maksimalno 110 piksela!) ---
+    # --- NOVI PRIKAZ LOGA I NASLOVA ---
     if image_base64:
-        logo_html = f'<zimg src="data:image/png;base64,{image_base64}" alt="Logo" style="width: 110px; height: 110px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(138, 43, 226, 0.7));">'
+        logo_html = f'<img src="data:image/png;base64,{image_base64}" alt="Logo" class="naslov-ikona">'
     else:
-        logo_html = '<div style="font-size: 4rem; text-shadow: 0 0 25px rgba(138, 43, 226, 0.7);">🎨</div>'
+        logo_html = '<div style="font-size: 4rem; text-align: center; margin-bottom: 10px;">🎨</div>'
         
     st.markdown(f'<div class="naslov-kontejner">{logo_html}<div class="naslov-tekst">TINČEK DIZAJN<br>PRO EDITOR</div></div>', unsafe_allow_html=True)
     st.markdown('<div style="font-size: 1.5rem; color: #ffffff; font-family: Orbitron; text-align: center; margin-bottom: 25px; text-shadow: 0 0 15px #8a2be2;">🛠️ Alati za obradu</div>', unsafe_allow_html=True)
@@ -146,21 +147,22 @@ with st.container(border=True):
             else:
                 st.warning("⚠️ Prvo učitaj sliku!")
 
+    # Ovdje smo dodali use_container_width=True da gumbi budu široki na mobitelu!
     with c1:
-        if st.button("✂️ Izreži"):
+        if st.button("✂️ Izreži", use_container_width=True):
             st.session_state.aktivni_alat = "izrezivanje" if st.session_state.aktivni_alat != "izrezivanje" else None
     with c2:
-        if st.button("📏 Vel"):
+        if st.button("📏 Vel", use_container_width=True):
             st.session_state.aktivni_alat = "velicina" if st.session_state.aktivni_alat != "velicina" else None
     with c3:
-        if st.button("✍️ Tekst"):
+        if st.button("✍️ Tekst", use_container_width=True):
             st.session_state.aktivni_alat = "tekst" if st.session_state.aktivni_alat != "tekst" else None
     with c4:
-        btn_rotate = st.button("🔄 Rotiraj")
+        btn_rotate = st.button("🔄 Rotiraj", use_container_width=True)
     with c5:
-        btn_cmyk = st.button("🧪 CMYK")
+        btn_cmyk = st.button("🧪 CMYK", use_container_width=True)
     with c6:
-        btn_reset = st.button("↩️ Reset")
+        btn_reset = st.button("↩️ Reset", use_container_width=True)
 
     if btn_rotate and st.session_state.uredjena:
         st.session_state.uredjena = st.session_state.uredjena.rotate(-90, expand=True)
