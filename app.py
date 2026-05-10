@@ -22,7 +22,7 @@ else:
 
 # 1. POSTAVKE STRANICE 
 st.set_page_config(
-    page_title="",
+    page_title="TINČEK DIZAJN PRO EDITOR",
     page_icon=page_icon_final, 
     layout="centered" 
 )
@@ -125,7 +125,6 @@ with st.container(border=True):
     else:
         logo_html = '<div style="font-size: 4rem; text-align: center; margin-bottom: 10px;">🎨</div>'
         
-    st.markdown(f'<div class="naslov-kontejner">{logo_html}<div class="naslov-tekst">TINČEK DIZAJN<br>PRO EDITOR</div></div>', unsafe_allow_html=True)
     st.markdown('<div style="font-size: 1.5rem; color: #ffffff; font-family: Orbitron; text-align: center; margin-bottom: 25px; text-shadow: 0 0 15px #8a2be2;">🛠️ Alati za obradu</div>', unsafe_allow_html=True)
 
     c_sel, c1, c2, c3, c4, c5, c6 = st.columns([1.8, 1, 1, 1, 1, 1, 1], gap="small")
