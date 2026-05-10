@@ -79,7 +79,7 @@ def render_sliku():
 with st.container(border=True):
     # NASLOV
     logo_html = f'<img src="data:image/png;base64,{image_base64}" alt="Logo" class="naslov-ikona">' if image_base64 else '<div style="font-size: 4rem; text-align: center; margin-bottom: 10px;">🎨</div>'
-    st.markdown(f'<div class="naslov-kontejner">{logo_html}<div class="naslov-tekst"></div></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="naslov-kontejner">{logo_html}<div class="naslov-tekst">TINČEK DIZAJN<br>PRO EDITOR</div></div>', unsafe_allow_html=True)
     
     # ALATNA TRAKA (Dodana GIF opcija)
     c_sel, c1, c2, c3, c_gif, c4, c5 = st.columns([1.6, 1, 1, 1, 1, 1, 1], gap="small")
