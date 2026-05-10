@@ -4,4 +4,3 @@ rembg
 onnxruntime
 opencv-python-headless
 streamlit-cropper
-rembg
