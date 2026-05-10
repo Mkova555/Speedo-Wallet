@@ -2,29 +2,23 @@ import streamlit as st
 from PIL import Image, ImageEnhance, ImageDraw, ImageFont
 from rembg import remove
 import io
-import base64 # Novi alat za ugradnju ikone direktno u kod
-import os
+import base64
 from streamlit_cropper import st_cropper 
-# components.html JavaScript hack smo maknuli jer na mobitelu rijetko radi,
-# rješavamo to na sigurniji način.
 
-# --- MAGIČNI KOD ZA UGRADNJU IKONE DIREKTNO U KOD (da se učita na mobitelu) ---
+# --- MAGIČNI KOD ZA UGRADNJU IKONE ---
 def get_base64_of_image(filename):
     try:
         with open(filename, "rb") as image_file:
             return base64.b64encode(image_file.read()).decode()
     except:
-        return None # Ako nema ikone, ne radi ništa
+        return None 
 
-# Provjera i ugradnja tvoje .png ikone
-image_base64 = get_base64_of_image("ikona.png") # Obavezno stavi ikona.png na GitHub
+image_base64 = get_base64_of_image("ikona.png")
 
-# Postavljanje ikone za sam preglednik (page icon)
-# Koristimo Python verziju jer je sigurnija.
 if image_base64:
-    page_icon_final = Image.open("ikona.png") # Pokušavamo direktno učitati sliku
+    page_icon_final = Image.open("ikona.png") 
 else:
-    page_icon_final = "🎨" # Ako nema slike, fallback na emoji
+    page_icon_final = "🎨" 
 
 # 1. POSTAVKE STRANICE 
 st.set_page_config(
@@ -33,7 +27,7 @@ st.set_page_config(
     layout="centered" 
 )
 
-# 2. CSS STILIZACIJA (Proširena paleta za nove opcije)
+# 2. CSS STILIZACIJA (POPRAVLJENA ZA MOBITELE)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap');
@@ -53,21 +47,39 @@ st.markdown("""
         padding: 30px 20px !important;
     }
 
+    /* POPRAVLJENI KONTEJNER NASLOVA ZA MOBITELE */
     .naslov-kontejner {
-        display: flex; align-items: center; justify-content: center; gap: 20px; 
+        display: flex; 
+        flex-direction: column; /* Na mobitelu slaže sliku iznad teksta */
+        align-items: center; 
+        justify-content: center; 
+        gap: 15px; 
         background: linear-gradient(180deg, #2a0a4a 0%, #121212 100%);
-        margin: -30px -20px 30px -20px; padding: 40px 20px;
+        margin: -30px -20px 30px -20px; 
+        padding: 30px 10px;
         border-bottom: 1px solid rgba(138, 43, 226, 0.3); 
+        text-align: center;
     }
-    .naslov-ikona { font-size: 5.5rem; text-shadow: 0 0 25px rgba(138, 43, 226, 0.7); }
-    .naslov-tekst {
-        color: #ffffff !important; font-family: 'Orbitron', sans-serif !important;
-        font-weight: 900; letter-spacing: 3px;
-        text-shadow: 0 0 10px #8a2be2, 0 0 20px #8a2be2, 0 0 40px #d896ff !important;
-        font-size: 2.6rem !important; line-height: 1.2 !important; margin: 0;
+    
+    /* Ako je ekran širi (kompjuter), stavi ih jedno pored drugog */
+    @media (min-width: 600px) {
+        .naslov-kontejner {
+            flex-direction: row; 
+            padding: 40px 20px;
+        }
     }
 
-    /* GUMBI I PADAJUĆI IZBORNICI - POJAČANI LJUBIČASTI DŽAJN */
+    .naslov-tekst {
+        color: #ffffff !important; 
+        font-family: 'Orbitron', sans-serif !important;
+        font-weight: 900; 
+        letter-spacing: 2px;
+        text-shadow: 0 0 10px #8a2be2, 0 0 20px #8a2be2, 0 0 40px #d896ff !important;
+        font-size: clamp(1.8rem, 6vw, 2.6rem) !important; /* Pametno smanjivanje fonta */
+        line-height: 1.2 !important; 
+        margin: 0;
+    }
+
     div[data-testid="stButton"] button {
         width: 100% !important; border-radius: 8px !important; height: 3.5em !important;
         background-color: #1a0b2e !important; color: #ffffff !important; 
@@ -83,15 +95,11 @@ st.markdown("""
         background-color: #1a0b2e !important; border: 1px solid #8a2be2 !important; 
         border-radius: 8px !important; height: 3.5em !important; transition: all 0.3s ease-in-out !important;
     }
-    div[data-baseweb="select"] > div:hover {
-        border-color: #d896ff !important; box-shadow: 0 0 15px rgba(138, 43, 226, 0.8) !important;
-    }
     div[data-baseweb="select"] > div > div { color: #ffffff !important; font-weight: 600 !important; }
     div[data-baseweb="popover"] div[role="listbox"] { background-color: #1a0b2e !important; border: 2px solid #8a2be2 !important; border-radius: 8px; }
     li[role="option"] { color: #ffffff !important; font-weight: 600 !important; background-color: #1a0b2e !important; }
     li[role="option"]:hover, li[role="option"][aria-selected="true"] { background-color: #8a2be2 !important; color: #ffffff !important; }
 
-    /* NOVO: STILIZACIJA ZA UNOS TEKSTA I BROJEVA DA PAŠE UZ TAMNU TEMU */
     div[data-baseweb="input"] {
         background-color: #1a0b2e !important; border-radius: 8px !important; border: 1px solid #8a2be2 !important;
     }
@@ -99,11 +107,7 @@ st.markdown("""
     label { color: #d896ff !important; font-weight: bold !important; }
 
     .stFileUploader { border: 2px dashed #8a2be2 !important; border-radius: 10px; }
-    
-    .veliki-pozdrav {
-        color: #d896ff !important; font-size: 1.2rem !important;
-        font-weight: 700 !important; text-align: center; margin-top: 40px;
-    }
+    .veliki-pozdrav { color: #d896ff !important; font-size: 1.2rem !important; font-weight: 700 !important; text-align: center; margin-top: 40px; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -114,18 +118,15 @@ if 'aktivni_alat' not in st.session_state: st.session_state.aktivni_alat = None
 if 'zadnji_ai_mod' not in st.session_state: st.session_state.zadnji_ai_mod = "AI: Standardno"
 
 with st.container(border=True):
-    # --- NOVI HAK NASLOVA - Učitavamo tvoju ikonu direktno u HTML ---
+    # --- FIKSIRANA VELIČINA LOGA (Maksimalno 110 piksela!) ---
     if image_base64:
-        # Ugrađujemo tvoju .png ikonu direktno u kod (na vrhu stranice u HTML)
-        logo_html = f'<img src="data:image/png;base64,{image_base64}" alt="Logo" class="naslov-ikona">'
+        logo_html = f'<zimg src="data:image/png;base64,{image_base64}" alt="Logo" style="width: 110px; height: 110px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(138, 43, 226, 0.7));">'
     else:
-        # Fallback na emoji ako nema ikone
-        logo_html = '<div class="naslov-ikona">🎨</div>'
+        logo_html = '<div style="font-size: 4rem; text-shadow: 0 0 25px rgba(138, 43, 226, 0.7);">🎨</div>'
         
     st.markdown(f'<div class="naslov-kontejner">{logo_html}<div class="naslov-tekst">TINČEK DIZAJN<br>PRO EDITOR</div></div>', unsafe_allow_html=True)
-    st.markdown('<div style="font-size: 2rem; color: #ffffff; font-family: Orbitron; text-align: center; margin-bottom: 25px; text-shadow: 0 0 15px #8a2be2;">🛠️ Alati za obradu</div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-size: 1.5rem; color: #ffffff; font-family: Orbitron; text-align: center; margin-bottom: 25px; text-shadow: 0 0 15px #8a2be2;">🛠️ Alati za obradu</div>', unsafe_allow_html=True)
 
-    # Alatna traka - dodali smo Tekst i Veličinu
     c_sel, c1, c2, c3, c4, c5, c6 = st.columns([1.8, 1, 1, 1, 1, 1, 1], gap="small")
     
     with c_sel:
@@ -181,7 +182,6 @@ with st.container(border=True):
             st.session_state.uredjena = img
             st.session_state.last_name = učitana_datoteka.name
 
-        # === 1. ALAT ZA IZREZIVANJE ===
         if st.session_state.aktivni_alat == "izrezivanje":
             st.info("Podesi okvir za izrezivanje na slici ispod i klikni 'POTVRDI REZ'")
             img_crop = st_cropper(st.session_state.uredjena, realtime_update=True, box_color='#8a2be2', aspect_ratio=None)
@@ -190,7 +190,6 @@ with st.container(border=True):
                 st.session_state.aktivni_alat = None
                 st.rerun()
                 
-        # === 2. ALAT ZA VELIČINU ===
         elif st.session_state.aktivni_alat == "velicina":
             st.info("Unesi novu širinu i visinu u pikselima:")
             col_w, col_h = st.columns(2)
@@ -202,7 +201,6 @@ with st.container(border=True):
                 st.session_state.aktivni_alat = None
                 st.rerun()
 
-        # === 3. ALAT ZA TEKST ===
         elif st.session_state.aktivni_alat == "tekst":
             st.info("Unesi tekst koji želiš dodati na sliku:")
             tekst_unos = st.text_input("Tekst", value="Tinček")
@@ -215,12 +213,11 @@ with st.container(border=True):
                 try:
                     font = ImageFont.truetype("arial.ttf", velicina_fonta)
                 except:
-                    font = ImageFont.load_default() # Sigurnosna mjera ako server nema font
+                    font = ImageFont.load_default() 
                 crtanje.text((20, 20), tekst_unos, font=font, fill=boja_teksta)
                 st.session_state.aktivni_alat = None
                 st.rerun()
                 
-        # === GLAVNI PRIKAZ SLIKE ===
         else:
             st.markdown("### 🎨 Boje")
             sat = st.slider("Zasićenost", 0.0, 3.0, 1.0, 0.1)
@@ -243,7 +240,7 @@ with st.container(border=True):
                 
                 if fmt == "ICO":
                     img_export = img_final.copy()
-                    img_export.thumbnail((256, 256)) # Automatski stisne sliku za ikonu!
+                    img_export.thumbnail((256, 256))
                     img_export.save(buf, format="ICO")
                     mime_type = "image/x-icon"
                 elif fmt == "JPG": 
