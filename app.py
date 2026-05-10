@@ -22,7 +22,7 @@ else:
 
 # 1. POSTAVKE STRANICE 
 st.set_page_config(
-    page_title="TINČEK DIZAJN PRO EDITOR",
+    page_title="",
     page_icon=page_icon_final, 
     layout="centered" 
 )
