@@ -238,3 +238,4 @@ with st.container(border=True):
                 st.download_button(label=f"⬇️ SPREMI KAO {fmt}", data=buf.getvalue(), file_name=ime_fajla, mime=mime_type, use_container_width=True)
         else:
             st.markdown('<p style="color:#d896ff;text-align:center;margin-top:20px;font-size:1.2rem;font-weight:bold;">👋 Učitaj sliku ili otvori 🎬 Kreator GIF-ova na vrhu!</p>', unsafe_allow_html=True)
+            
