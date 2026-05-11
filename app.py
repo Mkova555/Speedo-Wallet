@@ -47,12 +47,12 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- INICIJALIZACIJA MEMORIJE (Sada s podrškom za slojeve!) ---
+# --- INICIJALIZACIJA MEMORIJE ---
 if 'original' not in st.session_state: st.session_state.original = None
 if 'uredjena' not in st.session_state: st.session_state.uredjena = None
 if 'aktivni_alat' not in st.session_state: st.session_state.aktivni_alat = None
 if 'zadnji_ai_mod' not in st.session_state: st.session_state.zadnji_ai_mod = "AI: Standardno"
-if 'tekst_slojevi' not in st.session_state: st.session_state.tekst_slojevi = [] # Lista za tekst!
+if 'tekst_slojevi' not in st.session_state: st.session_state.tekst_slojevi = [] 
 
 # --- FUNKCIJA ZA ISCRTAVANJE (Pravi Live Preview) ---
 def render_sliku():
@@ -64,7 +64,6 @@ def render_sliku():
         try: font = ImageFont.truetype("arial.ttf", sloj['velicina'])
         except: font = ImageFont.load_default()
         
-        # Prikaz oblacica ako je odabran
         if sloj['stil'] == "Oblačić":
             bbox = crtanje.textbbox((sloj['x'], sloj['y']), sloj['tekst'], font=font)
             padding = 15
@@ -81,35 +80,49 @@ with st.container(border=True):
     logo_html = f'<img src="data:image/png;base64,{image_base64}" alt="Logo" class="naslov-ikona">' if image_base64 else '<div style="font-size: 4rem; text-align: center; margin-bottom: 10px;">🎨</div>'
     st.markdown(f'<div class="naslov-kontejner">{logo_html}<div class="naslov-tekst">TINČEK DIZAJN<br>PRO EDITOR</div></div>', unsafe_allow_html=True)
     
-    # ALATNA TRAKA (Dodana GIF opcija)
-    c_sel, c1, c2, c3, c_gif, c4, c5 = st.columns([1.6, 1, 1, 1, 1, 1, 1], gap="small")
-    
-    with c_sel:
-        bg_level = st.selectbox("AI", ["AI: Standardno", "AI: Precizno", "AI: Snažno"], label_visibility="collapsed")
-        if bg_level != st.session_state.zadnji_ai_mod and bg_level != "AI: Standardno":
-            if st.session_state.uredjena:
-                with st.spinner("AI radi..."):
-                    st.session_state.uredjena = remove(st.session_state.uredjena)
-                    st.session_state.zadnji_ai_mod = bg_level
-                    st.rerun()
+    st.markdown('<div style="font-size: 1.5rem; color: #ffffff; font-family: Orbitron; text-align: center; margin-bottom: 25px; text-shadow: 0 0 15px #8a2be2;">🛠️ Alati za obradu</div>', unsafe_allow_html=True)
 
+    # --- NOVI GRID RASPORED (2 PO 2) ZA SAVRŠEN MOBILNI PRIKAZ ---
+    bg_level = st.selectbox("AI", ["AI: Standardno", "AI: Precizno", "AI: Snažno"], label_visibility="collapsed")
+    if bg_level != st.session_state.zadnji_ai_mod and bg_level != "AI: Standardno":
+        if st.session_state.uredjena:
+            with st.spinner("AI radi..."):
+                if "Precizno" in bg_level:
+                    st.session_state.uredjena = remove(st.session_state.uredjena, alpha_matting=True, alpha_matting_foreground_threshold=240, alpha_matting_background_threshold=10, alpha_matting_erode_size=10)
+                else:
+                    st.session_state.uredjena = remove(st.session_state.uredjena, alpha_matting=True, alpha_matting_foreground_threshold=250, alpha_matting_background_threshold=20, alpha_matting_erode_size=15)
+                st.session_state.zadnji_ai_mod = bg_level
+                st.rerun()
+        else:
+            st.warning("⚠️ Prvo učitaj sliku!")
+
+    st.markdown("<br>", unsafe_allow_html=True) # Mali razmak
+
+    c1, c2 = st.columns(2)
     with c1: 
-        if st.button("✂️", help="Izreži"): st.session_state.aktivni_alat = "izrezivanje" if st.session_state.aktivni_alat != "izrezivanje" else None
+        if st.button("✂️ Izreži", use_container_width=True): st.session_state.aktivni_alat = "izrezivanje" if st.session_state.aktivni_alat != "izrezivanje" else None
     with c2: 
-        if st.button("📏", help="Veličina"): st.session_state.aktivni_alat = "velicina" if st.session_state.aktivni_alat != "velicina" else None
+        if st.button("📏 Veličina", use_container_width=True): st.session_state.aktivni_alat = "velicina" if st.session_state.aktivni_alat != "velicina" else None
+
+    c3, c4 = st.columns(2)
     with c3: 
-        if st.button("✍️", help="Tekst"): st.session_state.aktivni_alat = "tekst" if st.session_state.aktivni_alat != "tekst" else None
-    with c_gif:
-        if st.button("🎬", help="GIF Animacije"): st.session_state.aktivni_alat = "gif" if st.session_state.aktivni_alat != "gif" else None
-    with c4: 
-        if st.button("🔄", help="Rotiraj"): 
-            if st.session_state.uredjena: st.session_state.uredjena = st.session_state.uredjena.rotate(-90, expand=True)
+        if st.button("✍️ Tekst", use_container_width=True): st.session_state.aktivni_alat = "tekst" if st.session_state.aktivni_alat != "tekst" else None
+    with c4:
+        if st.button("🎬 GIF", use_container_width=True): st.session_state.aktivni_alat = "gif" if st.session_state.aktivni_alat != "gif" else None
+
+    c5, c6 = st.columns(2)
     with c5: 
-        if st.button("↩️", help="Reset"): 
-            st.session_state.uredjena = st.session_state.original
-            st.session_state.tekst_slojevi = []
-            st.session_state.aktivni_alat = None
-            st.rerun()
+        if st.button("🔄 Rotiraj", use_container_width=True): 
+            if st.session_state.uredjena: st.session_state.uredjena = st.session_state.uredjena.rotate(-90, expand=True)
+    with c6:
+        if st.button("🧪 CMYK", use_container_width=True):
+            if st.session_state.uredjena: st.session_state.uredjena = st.session_state.uredjena.convert("RGB").convert("CMYK").convert("RGB")
+            
+    if st.button("↩️ Resetiraj Sve", use_container_width=True): 
+        st.session_state.uredjena = st.session_state.original
+        st.session_state.tekst_slojevi = []
+        st.session_state.aktivni_alat = None
+        st.rerun()
 
     st.markdown("---")
 
@@ -120,7 +133,7 @@ with st.container(border=True):
         gif_slike = st.file_uploader("Učitaj sličice (okvire)", type=["png", "jpg", "jpeg"], accept_multiple_files=True)
         
         if gif_slike and len(gif_slike) > 1:
-            brzina = st.slider("Brzina animacije (ms po slici - manje je brže)", 50, 1500, 500, 50)
+            brzina = st.slider("Brzina animacije (ms po slici)", 50, 1500, 500, 50)
             
             if st.button("Generiraj GIF i Prikaži", use_container_width=True):
                 okviri = [Image.open(slika) for slika in gif_slike]
@@ -141,7 +154,7 @@ with st.container(border=True):
                 img = Image.open(učitana_datoteka).convert("RGBA")
                 st.session_state.original = img
                 st.session_state.uredjena = img.copy()
-                st.session_state.tekst_slojevi = [] # Reset tekstova za novu sliku
+                st.session_state.tekst_slojevi = [] 
                 st.session_state.last_name = učitana_datoteka.name
 
             # --- ALAT ZA REZANJE ---
@@ -150,7 +163,7 @@ with st.container(border=True):
                 img_crop = st_cropper(render_sliku(), realtime_update=True, box_color='#8a2be2', aspect_ratio=None)
                 if st.button("✅ POTVRDI REZ", use_container_width=True):
                     st.session_state.uredjena = img_crop
-                    st.session_state.tekst_slojevi = [] # Rezanja brišu tekst
+                    st.session_state.tekst_slojevi = [] 
                     st.session_state.aktivni_alat = None
                     st.rerun()
 
@@ -168,22 +181,21 @@ with st.container(border=True):
             elif st.session_state.aktivni_alat == "tekst":
                 st.markdown("### ✍️ Uređivač teksta")
                 
-                # Upravljanje postojećim tekstovima
                 if st.session_state.tekst_slojevi:
                     st.write("Tvoji trenutni tekstovi (Live pomicanje):")
                     for i, sloj in enumerate(st.session_state.tekst_slojevi):
                         with st.expander(f"Tekst: {sloj['tekst']}", expanded=True):
                             sloj['tekst'] = st.text_input("Izmijeni tekst", value=sloj['tekst'], key=f"t_{i}")
                             col_1, col_2 = st.columns(2)
-                            with col_1: sloj['x'] = st.slider("Pomakni Lijevo/Desno (X)", 0, st.session_state.uredjena.width, sloj['x'], key=f"x_{i}")
-                            with col_2: sloj['y'] = st.slider("Pomakni Gore/Dolje (Y)", 0, st.session_state.uredjena.height, sloj['y'], key=f"y_{i}")
+                            with col_1: sloj['x'] = st.slider("Lijevo/Desno (X)", 0, st.session_state.uredjena.width, sloj['x'], key=f"x_{i}")
+                            with col_2: sloj['y'] = st.slider("Gore/Dolje (Y)", 0, st.session_state.uredjena.height, sloj['y'], key=f"y_{i}")
                             
                             col_3, col_4, col_5 = st.columns(3)
                             with col_3: sloj['velicina'] = st.number_input("Vel.", value=sloj['velicina'], min_value=10, key=f"v_{i}")
                             with col_4: sloj['boja'] = st.color_picker("Boja", sloj['boja'], key=f"b_{i}")
                             with col_5: sloj['stil'] = st.selectbox("Stil", ["Samo tekst", "Oblačić"], index=0 if sloj['stil']=="Samo tekst" else 1, key=f"s_{i}")
                             
-                            if st.button(f"🗑️ Obriši ovaj tekst", key=f"del_{i}"):
+                            if st.button(f"🗑️ Obriši ovaj tekst", key=f"del_{i}", use_container_width=True):
                                 st.session_state.tekst_slojevi.pop(i)
                                 st.rerun()
 
@@ -193,32 +205,29 @@ with st.container(border=True):
                     st.session_state.tekst_slojevi.append({'tekst': novi_tekst, 'x': 50, 'y': 50, 'velicina': 40, 'boja': '#ff0000', 'stil': 'Samo tekst'})
                     st.rerun()
 
-            # --- GLAVNI PREGLED I SPREMANJE (Uvijek vidljivo!) ---
-            st.markdown("### 🎨 Živi Pregled (Live Preview)")
+            # --- GLAVNI PREGLED I SPREMANJE ---
+            st.markdown("### 🎨 Živi Pregled")
             
-            # Klizači za boje uvijek dostupni izvan specijalnih alata
             if st.session_state.aktivni_alat not in ["izrezivanje", "tekst", "velicina"]:
                 sat = st.slider("Zasićenost (Boje)", 0.0, 3.0, 1.0, 0.1)
                 bright = st.slider("Svjetlina", 0.5, 2.0, 1.0, 0.1)
                 
-                # Primjena boja na base sliku
                 if sat != 1.0: st.session_state.uredjena = ImageEnhance.Color(st.session_state.uredjena).enhance(sat)
                 if bright != 1.0: st.session_state.uredjena = ImageEnhance.Brightness(st.session_state.uredjena).enhance(bright)
 
-            # --- ISCRTAVANJE ŽIVE SLIKE (S tekstovima na njoj) ---
             konacna_slika = render_sliku()
             st.image(konacna_slika, use_container_width=True)
 
-            # --- OPCIJE ZA SPREMANJE (S ICO dimenzijama) ---
+            # --- OPCIJE ZA SPREMANJE ---
             st.markdown("---")
             col_f, col_ico, col_btn = st.columns([1, 1, 1.5])
             with col_f:
                 fmt = st.selectbox("Format", ["PNG", "JPG", "WEBP", "ICO"], label_visibility="collapsed")
             
-            ico_velicina = 256 # Default
+            ico_velicina = 256
             if fmt == "ICO":
                 with col_ico:
-                    ico_velicina = st.selectbox("Dimenzija (px)", [512, 256, 128, 64, 32, 16], label_visibility="collapsed")
+                    ico_velicina = st.selectbox("Dim. (px)", [512, 256, 128, 64, 32, 16], label_visibility="collapsed")
             
             with col_btn:
                 buf = io.BytesIO()
@@ -235,7 +244,6 @@ with st.container(border=True):
                 else:
                     slika_za_export.save(buf, format=fmt)
                     
-                st.download_button(label=f"⬇️ SPREMI KAO {fmt}", data=buf.getvalue(), file_name=ime_fajla, mime=mime_type, use_container_width=True)
+                st.download_button(label=f"⬇️ SPREMI", data=buf.getvalue(), file_name=ime_fajla, mime=mime_type, use_container_width=True)
         else:
             st.markdown('<p style="color:#d896ff;text-align:center;margin-top:20px;font-size:1.2rem;font-weight:bold;">👋 Učitaj sliku ili otvori 🎬 Kreator GIF-ova na vrhu!</p>', unsafe_allow_html=True)
-            
