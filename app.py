@@ -78,6 +78,7 @@ def render_sliku():
 with st.container(border=True):
     # NASLOV
     logo_html = f'<img src="data:image/png;base64,{image_base64}" alt="Logo" class="naslov-ikona">' if image_base64 else '<div style="font-size: 4rem; text-align: center; margin-bottom: 10px;">🎨</div>'
+    st.markdown(f'<div class="naslov-kontejner">{logo_html}<div class="naslov-tekst"></div></div>', unsafe_allow_html=True)
     
     st.markdown('<div style="font-size: 1.5rem; color: #ffffff; font-family: Orbitron; text-align: center; margin-bottom: 25px; text-shadow: 0 0 15px #8a2be2;">🛠️ Alati za obradu</div>', unsafe_allow_html=True)
 
